@@ -209,7 +209,7 @@ export default function AccountModal({
           </div>
 
           <div class="footer">
-            <strong>✨ 1-Year Polish & Shine Guarantee Included ✨</strong><br/>
+            <strong>✨ Premium Micro-Gold Finish & Quality Assured ✨</strong><br/>
             Thank you for trusting Sparkle Jewelry Sullia with your auspicious jewellery moments.<br/>
             For service & WhatsApp enquiries: +91 89218 44922
           </div>
@@ -579,7 +579,7 @@ export default function AccountModal({
                       </span>
                     </p>
                     <p className="text-[11px] text-stone-500 mt-1">
-                      Warranty: 1-Year Polish & Shine Guarantee included with tax invoice.
+                      Quality: Premium Micro-Gold Plated & Inspected with Tax Invoice.
                     </p>
                   </div>
                 </div>
@@ -591,7 +591,7 @@ export default function AccountModal({
                     <span className="font-mono">₹{order.subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Polish Warranty & Jewellery Box:</span>
+                    <span>Luxury Jewellery Box & Pouch:</span>
                     <span className="text-emerald-700 font-semibold">Included FREE</span>
                   </div>
                   <div className="flex justify-between">

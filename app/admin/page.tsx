@@ -230,7 +230,7 @@ export default function OwnerAdminDashboard() {
   const [newProdImages, setNewProdImages] = useState<string[]>([]);
   const [manualUrlInput, setManualUrlInput] = useState('');
   const [newProdMaterial, setNewProdMaterial] = useState('Pure Copper Base with 1-Gram Micro Gold Plating');
-  const [newProdWarranty, setNewProdWarranty] = useState('1-Year Polish & Shine Guarantee');
+  const [newProdWarranty, setNewProdWarranty] = useState('22KT Micro Gold Plated Finish');
   const [newProdWaterproof, setNewProdWaterproof] = useState(false);
   const [newProdStock, setNewProdStock] = useState('10');
   const [newProdWeight, setNewProdWeight] = useState('');
@@ -398,15 +398,15 @@ export default function OwnerAdminDashboard() {
     setNewProdCategory(cat);
     if (cat === 'anti-tarnish') {
       setNewProdMaterial('316L Surgical Stainless Steel + 18K Real Gold PVD Coating');
-      setNewProdWarranty('Lifetime Anti-Tarnish Guarantee');
+      setNewProdWarranty('18K PVD Anti-Tarnish Coating');
       setNewProdWaterproof(true);
     } else if (cat === '1-gram-gold') {
       setNewProdMaterial('Pure Copper Base with 1-Gram Micro Gold Plating');
-      setNewProdWarranty('1-Year Polish & Shine Guarantee');
+      setNewProdWarranty('22KT Micro Gold Plated Finish');
       setNewProdWaterproof(false);
     } else {
       setNewProdMaterial('Alloy / Brass with High Grade CZ & Kundan Stones');
-      setNewProdWarranty('Party Wear Sparkle Coating');
+      setNewProdWarranty('High Grade Kundan / CZ Party Wear Finish');
       setNewProdWaterproof(false);
     }
   };

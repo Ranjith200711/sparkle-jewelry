@@ -223,7 +223,7 @@ export default function PolicyModal({
             <div className="space-y-4 animate-fadeIn">
               <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 text-amber-950">
                 <h3 className="font-serif font-bold text-sm text-[#5A3F29] mb-1">
-                  Cancellation, Return & 1-Year Polish Guarantee Policy
+                  Cancellation, Return & Replacement Policy
                 </h3>
                 <p className="text-[11px] text-[#7A5B40]">
                   We stand 100% behind the quality and craftsmanship of our 1-Gram Micro Gold and 18K Anti-Tarnish jewellery.
@@ -236,8 +236,8 @@ export default function PolicyModal({
                     <span>🛑 1. Order Cancellation Policy</span>
                   </h4>
                   <ul className="list-disc pl-5 text-[11px] text-stone-600 space-y-1">
-                    <li><strong>Before Dispatch:</strong> You may cancel an order free of charge at any time before the courier pickup is scheduled. Call or WhatsApp +91 89218 44922 with your Order Number (e.g. SLJ-123456). Online payments will be refunded 100% immediately.</li>
-                    <li><strong>After Dispatch:</strong> Once a carrier AWB tracking waybill is generated and handover is completed, cancellation is subject to return freight deduction.</li>
+                    <li><strong>Before Dispatch:</strong> You may cancel an order free of charge at any time before courier pickup. Call or WhatsApp +91 89218 44922 with your Order Number (e.g. SLJ-123456). Online payments will be refunded 100% immediately.</li>
+                    <li><strong>After Dispatch:</strong> Once a carrier AWB tracking waybill is generated and handover is completed, cancellation can only be accepted upon return to origin.</li>
                   </ul>
                 </div>
 
@@ -247,17 +247,17 @@ export default function PolicyModal({
                     <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">100% FREE REPLACEMENT</span>
                   </h4>
                   <ul className="list-disc pl-5 text-[11px] text-stone-600 space-y-1">
-                    <li>If any item arrives damaged in transit, defective, or incorrect piece received, we provide a <strong>100% free doorstep replacement</strong> or full refund within 7 days of delivery.</li>
+                    <li>If any item arrives damaged in transit, defective, or incorrect piece received, we provide a <strong>100% free doorstep replacement</strong> within 7 days of delivery.</li>
                     <li><strong>Mandatory Unboxing Video:</strong> In accordance with Indian courier logistics norms for jewellery, customers are required to record a continuous unboxing video from sealed package opening without cuts or edits to claim transit damage.</li>
                   </ul>
                 </div>
 
                 <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
                   <h4 className="font-bold text-stone-900 text-xs mb-1 flex items-center gap-1.5">
-                    <span>✨ 3. Authentic 1-Year Shine & Polish Warranty</span>
+                    <span>💎 3. Jewellery Care & Polish Durability</span>
                   </h4>
                   <p className="text-[11px] text-stone-600 leading-relaxed">
-                    Every piece of 1-Gram Gold & Anti-Tarnish jewellery includes an official Guarantee Card. We guarantee gold polish and anti-tarnish coating for 12 months under normal wear (avoid direct contact with strong industrial chemicals or bleaches). Free repolishing or replacement is provided if premature discoloration occurs.
+                    Our jewellery is crafted with high-density micro-gold and PVD anti-tarnish plating for long-lasting luster. Since polish longevity depends on individual care, sweat pH, and wear conditions, <strong>we do not offer free re-polishing services, re-plating, or post-wear warranties once jewellery has been worn</strong>. Please keep jewellery away from direct perfumes, sanitizers, and moisture to preserve shine.
                   </p>
                 </div>
 

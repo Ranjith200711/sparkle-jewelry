@@ -22,7 +22,7 @@ export default function CategoriesSheet({
       id: '1-gram-gold' as JewelleryCategory,
       title: '✨ 1-Gram Micro Gold',
       subtitle: 'Traditional Temple Necklaces, Harams & Daily Wear Chains',
-      badge: '22K Gold Look • 1-Yr Polish',
+      badge: '22K Gold Look • Micro Plated',
       color: 'bg-amber-50 border-amber-200 text-amber-900',
       icon: Sparkles
     },

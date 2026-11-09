@@ -51,7 +51,7 @@ function PoliciesViewInternal({ initialTab = 'contact' }: PoliciesViewProps) {
   const navItems = [
     { id: 'contact', label: 'Contact Us', subtitle: 'Store address & phone', icon: Phone },
     { id: 'shipping', label: 'Shipping & Delivery', subtitle: '2-4hr Sullia & courier timelines', icon: Truck },
-    { id: 'refund', label: 'Refund & Returns', subtitle: '7-day replacement & 1-yr polish', icon: RotateCcw },
+    { id: 'refund', label: 'Refund & Returns', subtitle: '7-day transit replacement', icon: RotateCcw },
     { id: 'terms', label: 'Terms & Conditions', subtitle: 'Governing laws & DK jurisdiction', icon: FileText },
     { id: 'privacy', label: 'Privacy Policy', subtitle: 'Zero data selling & RBI security', icon: Lock }
   ] as const;
@@ -135,7 +135,7 @@ function PoliciesViewInternal({ initialTab = 'contact' }: PoliciesViewProps) {
                 <span>Need Direct Assistance?</span>
               </div>
               <p className="text-[11px] text-amber-800 leading-relaxed">
-                Visit our showroom counter in Sullia or connect with our manager via WhatsApp for bespoke orders or polish queries.
+                Visit our showroom counter in Sullia or connect with our manager via WhatsApp for bespoke orders or product enquiries.
               </p>
               <a
                 href="https://wa.me/918921844922"
@@ -277,10 +277,10 @@ function PoliciesViewInternal({ initialTab = 'contact' }: PoliciesViewProps) {
             {activeTab === 'refund' && (
               <div className="space-y-6 animate-fadeIn">
                 <div className="border-b border-stone-100 pb-4">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#C68A4C] mb-1">Customer Guarantee & Returns</div>
-                  <h1 className="font-serif font-bold text-2xl text-stone-900">Refund, Return & Warranty Policy</h1>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#C68A4C] mb-1">Customer Protection & Returns</div>
+                  <h1 className="font-serif font-bold text-2xl text-stone-900">Refund, Return & Cancellation Policy</h1>
                   <p className="text-xs text-stone-500 mt-1">
-                    Clear policies for 7-day doorstep replacement, order cancellation, and our 1-Year Polish Warranty.
+                    Clear policies for 7-day doorstep replacement for transit damages, jewellery care standards, and order cancellation.
                   </p>
                 </div>
 
@@ -298,17 +298,20 @@ function PoliciesViewInternal({ initialTab = 'contact' }: PoliciesViewProps) {
                       <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-bold">100% REPLACEMENT</span>
                     </h3>
                     <p className="text-xs text-emerald-950">
-                      If an item arrives damaged, defective, or incorrect in design, we offer a <strong>100% free doorstep replacement</strong> or full refund within 7 days of delivery.
+                      If an item arrives damaged in transit, defective, or incorrect in design, we offer a <strong>100% free doorstep replacement</strong> within 7 days of delivery.
                     </p>
                     <p className="text-[11px] text-stone-600 mt-1">
                       <strong>Unboxing Video Requirement:</strong> To facilitate courier claims, customers are requested to record a continuous unboxing video of the sealed parcel from package opening without cuts or edits.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl space-y-1.5">
-                    <h3 className="font-bold text-amber-950 text-sm">✨ 3. Authentic 1-Year Shine & Polish Warranty</h3>
-                    <p className="text-xs text-amber-950 leading-relaxed">
-                      Every piece of 1-Gram Gold and 18K Anti-Tarnish jewellery comes accompanied by an authentic guarantee certificate card. We guarantee that the gold polish and anti-tarnish coating will retain its luster for 12 months under normal wear (avoid harsh chemical bleaches). Free repolishing or product replacement is provided if premature fading occurs.
+                  <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl space-y-1.5">
+                    <h3 className="font-bold text-stone-900 text-sm">💎 3. Jewellery Care & Polish Durability</h3>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Our 1-Gram Micro Gold and 18K Anti-Tarnish jewellery is crafted using high-grade micro-plating and PVD technology for long-lasting luster. Since imitation and micro-gold jewellery longevity depends strictly on personal care, wear frequency, sweat pH, and storage conditions, <strong>we do not offer free re-polishing services, polish renewal, or post-wear warranties once jewellery has been worn</strong>.
+                    </p>
+                    <p className="text-[11px] text-stone-500 mt-1">
+                      <strong>Recommended Care:</strong> Avoid direct contact with perfumes, hairsprays, sanitizers, swimming pool chlorine, and harsh detergents. Store each piece dry in the provided luxury velvet pouch.
                     </p>
                   </div>
 
