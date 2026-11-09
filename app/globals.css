@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #faf8f5;
+  --foreground: #1a1715;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem; /* Prevents sticky navbar from covering targets on smooth-scroll */
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: none; /* Prevents horizontal swipe-back gesture conflicts on phones/trackpads */
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: var(--font-playfair), Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
+/* Hide Next.js dev indicator overlay and badges */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-dev-indicator],
+[data-nextjs-dialog-overlay],
+[data-nextjs-collapsed-toast] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* =========================================================================
+   HERO LUXURY RESPONSIVE BACKGROUND
+   Uses CSS media queries to serve crisp, unpixelated WebP tiers per viewport.
+   ========================================================================= */
+.hero-luxury-banner {
+  background-color: #180E08;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 75% center;
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0); /* Hardware accelerated rendering */
+}
+
+/* Mobile Default (< 640px) - Lightweight 768px WebP */
+.hero-bg-responsive {
+  background-image: url('/hero-mobile.webp');
+}
+
+/* Tablet / Foldables (>= 640px) - 1280px WebP */
+@media (min-width: 640px) {
+  .hero-bg-responsive {
+    background-image: url('/hero-tablet.webp');
+    background-position: 72% center;
+  }
+}
+
+/* Laptops & Full HD Desktop (>= 1024px) - 1920px WebP */
+@media (min-width: 1024px) {
+  .hero-bg-responsive {
+    background-image: url('/hero-desktop-1080p.webp');
+    background-position: right center;
+  }
+}
+
+/* 2K / QHD Displays (>= 1440px) - 2560px WebP */
+@media (min-width: 1440px) {
+  .hero-bg-responsive {
+    background-image: url('/hero-desktop-2k.webp');
+    background-position: right center;
+  }
+}
+
+/* 4K Ultra HD (>= 1920px) & Retina / High-DPI Displays (min-resolution: 192dpi) */
+@media (min-width: 1920px),
+       (-webkit-min-device-pixel-ratio: 2) and (min-width: 1024px),
+       (min-resolution: 192dpi) and (min-width: 1024px) {
+  .hero-bg-responsive {
+    background-image: url('/hero-desktop-4k.webp');
+    background-position: right center;
+  }
+}
+
+/* Smooth Touch & Trackpad horizontal scrollers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+}
+
+/* GPU Hardware compositing for sticky headers & floating elements */
+header.sticky {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
