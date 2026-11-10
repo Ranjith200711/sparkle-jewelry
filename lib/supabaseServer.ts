@@ -2,11 +2,14 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product, Order, OrderStatus } from '../types';
 import { FALLBACK_PRODUCTS, SAMPLE_ADMIN_ORDERS } from './api';
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_KEY =
+const rawUrl = process.env.SUPABASE_URL || '';
+const rawKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.SUPABASE_ANON_KEY ||
   '';
+
+const SUPABASE_URL = rawUrl.trim().replace(/^["']|["']$/g, '');
+const SUPABASE_KEY = rawKey.trim().replace(/^["']|["']$/g, '');
 
 let supabaseClient: SupabaseClient | null = null;
 

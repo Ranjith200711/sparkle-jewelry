@@ -38,6 +38,10 @@ export async function GET() {
       hasSupabaseUrl,
       hasServiceKey,
       hasAnonKey,
+      keyLength: process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0,
+      keyPreview: process.env.SUPABASE_SERVICE_ROLE_KEY
+        ? `${process.env.SUPABASE_SERVICE_ROLE_KEY.slice(0, 5)}...${process.env.SUPABASE_SERVICE_ROLE_KEY.slice(-4)}`
+        : 'none',
     },
     database: {
       queryStatus,
