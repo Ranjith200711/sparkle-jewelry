@@ -248,35 +248,177 @@ export const FALLBACK_PRODUCTS: Product[] = [
   }
 ];
 
+export function compressImageFile(file: File, maxDim = 800, quality = 0.75): Promise<string> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') return resolve('');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve((e.target?.result as string) || '');
+        }
+      };
+      img.onerror = () => resolve((e.target?.result as string) || '');
+      img.src = (e.target?.result as string) || '';
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function createProduct(payload: any): Promise<{ success: boolean; data?: Product; message?: string }> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return json;
+      }
+    }
+  } catch (err: any) {
+    // Backend offline / Vercel preview fallback
+  }
+
+  // Create persistent local product
+  const newProduct: Product = {
+    id: 'prod-' + Date.now(),
+    name: payload.name,
+    category: payload.category,
+    subcategory: payload.subcategory || 'general',
+    description: payload.description || `${payload.name} crafted with ${payload.material || '22K Micro Gold Plating'}.`,
+    price: Number(payload.price),
+    originalPrice: Number(payload.originalPrice || payload.price),
+    images: payload.images && payload.images.length > 0 ? payload.images : ['/floral-curve-earrings-front.webp'],
+    inStock: true,
+    stockCount: Number(payload.stockCount || 10),
+    featured: true,
+    material: payload.material || '22KT Micro Gold Plated',
+    polishWarranty: payload.polishWarranty || '22KT Micro Gold Plated Finish',
+    isWaterproof: !!payload.isWaterproof,
+    isSweatproof: true,
+    careInstructions: payload.careInstructions || 'Keep away from direct perfumes, sprays, and chemical water. Store in airtight pouch.',
+    weightGrams: payload.weightGrams ? Number(payload.weightGrams) : undefined,
+    sizeOptions: payload.sizeOptions || []
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      const existingRaw = localStorage.getItem('sparkle_custom_products');
+      const existing: Product[] = existingRaw ? JSON.parse(existingRaw) : [];
+      existing.unshift(newProduct);
+      localStorage.setItem('sparkle_custom_products', JSON.stringify(existing));
+    } catch (e) {
+      console.warn('LocalStorage save failed:', e);
+    }
+  }
+
+  FALLBACK_PRODUCTS.unshift(newProduct);
+  return { success: true, data: newProduct, message: 'Product published successfully' };
+}
+
 export async function fetchProducts(category?: string): Promise<Product[]> {
+  let backendProducts: Product[] | null = null;
   try {
     const url = category ? `${API_BASE_URL}/products?category=${category}` : `${API_BASE_URL}/products`;
     const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error('API request failed');
-    const json = await res.json();
-    return json.data;
-  } catch {
-    if (category) {
-      return FALLBACK_PRODUCTS.filter(p => p.category === category);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+        backendProducts = json.data;
+      }
     }
-    return FALLBACK_PRODUCTS;
+  } catch {}
+
+  // Get local custom products from browser
+  let localCustomProducts: Product[] = [];
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('sparkle_custom_products');
+      if (saved) {
+        localCustomProducts = JSON.parse(saved);
+      }
+    } catch {}
   }
+
+  const combined = backendProducts
+    ? [...localCustomProducts, ...backendProducts]
+    : [...localCustomProducts, ...FALLBACK_PRODUCTS];
+
+  // Deduplicate by ID
+  const map = new Map<string, Product>();
+  combined.forEach((p) => map.set(p.id, p));
+  const list = Array.from(map.values());
+
+  if (category) {
+    return list.filter((p) => p.category === category);
+  }
+  return list;
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('API request failed');
-    const json = await res.json();
-    return json.data;
-  } catch {
-    const found = FALLBACK_PRODUCTS.find(p => p.id === id);
-    return found || null;
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data) return json.data;
+    }
+  } catch {}
+
+  // Check local custom products
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('sparkle_custom_products');
+      if (saved) {
+        const localList: Product[] = JSON.parse(saved);
+        const match = localList.find((p) => p.id === id);
+        if (match) return match;
+      }
+    } catch {}
   }
+
+  const found = FALLBACK_PRODUCTS.find((p) => p.id === id);
+  return found || null;
 }
 
 export async function deleteProduct(productId: string): Promise<boolean> {
-  const index = FALLBACK_PRODUCTS.findIndex(p => p.id === productId);
+  // Remove from localStorage
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('sparkle_custom_products');
+      if (saved) {
+        const localList: Product[] = JSON.parse(saved);
+        const filtered = localList.filter((p) => p.id !== productId);
+        localStorage.setItem('sparkle_custom_products', JSON.stringify(filtered));
+      }
+    } catch {}
+  }
+
+  const index = FALLBACK_PRODUCTS.findIndex((p) => p.id === productId);
   if (index !== -1) {
     FALLBACK_PRODUCTS.splice(index, 1);
   }

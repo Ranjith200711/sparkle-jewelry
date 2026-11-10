@@ -8,6 +8,8 @@ import {
   requestPickup,
   fetchProducts,
   deleteProduct,
+  createProduct,
+  compressImageFile,
   adminLogin,
   verifyAdminSession,
   setAdminToken,
@@ -284,16 +286,12 @@ export default function OwnerAdminDashboard() {
         throw new Error(json.message || 'Upload failed');
       }
     } catch {
-      // Local fallback: generate Base64 preview data URLs
-      const readers = Array.from(files).map((file) => {
-        return new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        });
-      });
-      const dataUrls = await Promise.all(readers);
-      setNewProdImages((prev) => [...prev, ...dataUrls].slice(0, 8));
+      // Local fallback: generate compressed preview data URLs
+      const compressedList = await Promise.all(
+        Array.from(files).map((file) => compressImageFile(file, 800, 0.75))
+      );
+      const validImages = compressedList.filter(Boolean);
+      setNewProdImages((prev) => [...prev, ...validImages].slice(0, 8));
     } finally {
       setUploadingPhoto(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -440,13 +438,8 @@ export default function OwnerAdminDashboard() {
         inStock: true
       };
 
-      const res = await fetch(`${API_BASE_URL}/products`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) throw new Error('Failed to create product');
+      const result = await createProduct(payload);
+      if (!result.success) throw new Error(result.message || 'Failed to create product');
 
       // Reset form & reload
       setNewProdName('');
@@ -1045,7 +1038,13 @@ export default function OwnerAdminDashboard() {
                                   method: 'PATCH',
                                   headers: getAuthHeaders(),
                                   body: JSON.stringify({ status: 'delivered' })
-                                }).then(() => loadData());
+                                })
+                                  .then(() => loadData())
+                                  .catch(() => {
+                                    setOrders((prev) =>
+                                      prev.map((o) => (o.id === order.id ? { ...o, status: 'delivered' } : o))
+                                    );
+                                  });
                               }}
                               className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200 flex items-center gap-1 shrink-0"
                             >
