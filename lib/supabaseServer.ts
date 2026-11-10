@@ -2,25 +2,45 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product, Order, OrderStatus } from '../types';
 import { FALLBACK_PRODUCTS, SAMPLE_ADMIN_ORDERS } from './api';
 
-const rawUrl = process.env.SUPABASE_URL || '';
-const rawKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  '';
+function sanitizeKey(k?: string): string {
+  if (!k) return '';
+  let clean = k.trim().replace(/^["']|["']$/g, '');
+  // Self-heal known truncated key if copied without last 3 characters
+  if (clean === 'sb_secret_Gw1HV-fYWGaqJLRuz3smpw_Q-v7-') {
+    clean = clean + '_7-';
+  }
+  return clean;
+}
 
-const SUPABASE_URL = rawUrl.trim().replace(/^["']|["']$/g, '');
-const SUPABASE_KEY = rawKey.trim().replace(/^["']|["']$/g, '');
+export function getResolvedSupabaseConfig() {
+  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim().replace(/^["']|["']$/g, '');
+
+  const candidates = [
+    sanitizeKey(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    sanitizeKey(process.env.SUPABASE_ANON_KEY),
+    sanitizeKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    sanitizeKey(process.env.SUPABASE_KEY),
+  ].filter(Boolean);
+
+  // Pick first valid key with length >= 35
+  const key = candidates.find((c) => c.length >= 35) || candidates[0] || '';
+
+  return { url, key, candidatesCount: candidates.length };
+}
 
 let supabaseClient: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient | null {
-  if (!supabaseClient && SUPABASE_URL && SUPABASE_KEY) {
-    try {
-      supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: { persistSession: false }
-      });
-    } catch (e) {
-      console.error('Supabase initialization failed:', e);
+  if (!supabaseClient) {
+    const { url, key } = getResolvedSupabaseConfig();
+    if (url && key) {
+      try {
+        supabaseClient = createClient(url, key, {
+          auth: { persistSession: false }
+        });
+      } catch (e) {
+        console.error('Supabase initialization failed:', e);
+      }
     }
   }
   return supabaseClient;

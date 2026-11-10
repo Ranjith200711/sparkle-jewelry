@@ -1,27 +1,36 @@
 import { NextResponse } from 'next/server';
+import { getSupabase, getResolvedSupabaseConfig } from '@/lib/supabaseServer';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const hasSupabaseUrl = Boolean(process.env.SUPABASE_URL);
-  const hasServiceKey = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const hasAnonKey = Boolean(process.env.SUPABASE_ANON_KEY);
+  const config = getResolvedSupabaseConfig();
+  const hasSupabaseUrl = Boolean(config.url);
+  const activeKeyPreview = config.key
+    ? `${config.key.slice(0, 6)}...${config.key.slice(-4)}`
+    : 'none';
+  const activeKeyLength = config.key.length;
 
   let queryStatus = 'untested';
   let queryError: string | null = null;
   let productCount = 0;
+  let sampleProducts: any[] = [];
 
   try {
-    const { getSupabase } = await import('@/lib/supabaseServer');
     const sb = getSupabase();
     if (sb) {
-      const { data, error } = await sb.from('products').select('id').limit(5);
+      const { data, error } = await sb
+        .from('products')
+        .select('id, name, price')
+        .limit(5);
+
       if (error) {
         queryStatus = 'error';
         queryError = error.message;
       } else {
         queryStatus = 'success';
         productCount = data?.length || 0;
+        sampleProducts = data || [];
       }
     } else {
       queryStatus = 'no_client';
@@ -34,19 +43,19 @@ export async function GET() {
   return NextResponse.json({
     status: 'online',
     service: 'Sparkle Jewelry Sullia Full-Stack API',
-    env: {
-      hasSupabaseUrl,
-      hasServiceKey,
-      hasAnonKey,
-      keyLength: process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0,
-      keyPreview: process.env.SUPABASE_SERVICE_ROLE_KEY
-        ? `${process.env.SUPABASE_SERVICE_ROLE_KEY.slice(0, 5)}...${process.env.SUPABASE_SERVICE_ROLE_KEY.slice(-4)}`
-        : 'none',
-    },
-    database: {
+    supabase: {
+      hasUrl: hasSupabaseUrl,
+      activeKeyPreview,
+      activeKeyLength,
       queryStatus,
       queryError,
       productCount,
+      sampleProducts,
+    },
+    env: {
+      hasServiceKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+      hasAnonKey: Boolean(process.env.SUPABASE_ANON_KEY),
+      hasNextPublicAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
     },
     timestamp: new Date().toISOString(),
   });
