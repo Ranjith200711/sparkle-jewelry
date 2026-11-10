@@ -4,12 +4,7 @@ import { FALLBACK_PRODUCTS, SAMPLE_ADMIN_ORDERS } from './api';
 
 function sanitizeKey(k?: string): string {
   if (!k) return '';
-  let clean = k.trim().replace(/^["']|["']$/g, '');
-  // Self-heal known truncated key if copied without last 3 characters
-  if (clean === 'sb_secret_Gw1HV-fYWGaqJLRuz3smpw_Q-v7-') {
-    clean = clean + '_7-';
-  }
-  return clean;
+  return k.trim().replace(/^["']|["']$/g, '');
 }
 
 export function getResolvedSupabaseConfig() {
@@ -22,10 +17,9 @@ export function getResolvedSupabaseConfig() {
     sanitizeKey(process.env.SUPABASE_KEY),
   ].filter(Boolean);
 
-  // Pick first valid key with length >= 35
   const key = candidates.find((c) => c.length >= 35) || candidates[0] || '';
 
-  return { url, key, candidatesCount: candidates.length };
+  return { url, key };
 }
 
 let supabaseClient: SupabaseClient | null = null;

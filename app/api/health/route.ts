@@ -6,57 +6,33 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const config = getResolvedSupabaseConfig();
   const hasSupabaseUrl = Boolean(config.url);
-  const activeKeyPreview = config.key
-    ? `${config.key.slice(0, 6)}...${config.key.slice(-4)}`
-    : 'none';
-  const activeKeyLength = config.key.length;
+  const hasSupabaseKey = Boolean(config.key);
 
-  let queryStatus = 'untested';
-  let queryError: string | null = null;
+  let databaseStatus = 'disconnected';
   let productCount = 0;
-  let sampleProducts: any[] = [];
 
   try {
     const sb = getSupabase();
     if (sb) {
       const { data, error } = await sb
         .from('products')
-        .select('id, name, price')
+        .select('id')
         .limit(5);
 
-      if (error) {
-        queryStatus = 'error';
-        queryError = error.message;
-      } else {
-        queryStatus = 'success';
-        productCount = data?.length || 0;
-        sampleProducts = data || [];
+      if (!error && data) {
+        databaseStatus = 'connected';
+        productCount = data.length;
       }
-    } else {
-      queryStatus = 'no_client';
     }
   } catch (e: any) {
-    queryStatus = 'exception';
-    queryError = e.message;
+    databaseStatus = 'error';
   }
 
   return NextResponse.json({
     status: 'online',
-    service: 'Sparkle Jewelry Sullia Full-Stack API',
-    supabase: {
-      hasUrl: hasSupabaseUrl,
-      activeKeyPreview,
-      activeKeyLength,
-      queryStatus,
-      queryError,
-      productCount,
-      sampleProducts,
-    },
-    env: {
-      hasServiceKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
-      hasAnonKey: Boolean(process.env.SUPABASE_ANON_KEY),
-      hasNextPublicAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-    },
+    service: 'Sparkle Jewelry Sullia API',
+    database: databaseStatus,
+    healthy: hasSupabaseUrl && hasSupabaseKey && databaseStatus === 'connected',
     timestamp: new Date().toISOString(),
   });
 }
